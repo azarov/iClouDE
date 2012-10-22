@@ -1,7 +1,6 @@
 package resources;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.ws.rs.Consumes;
@@ -15,7 +14,6 @@ import javax.ws.rs.core.Response.Status;
 
 import com.google.gson.Gson;
 import com.sun.jersey.api.view.Viewable;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import storage.TaskManager;
 
@@ -43,7 +41,7 @@ public class TaskService {
 	
 	@POST
 	@Path("/take_task")
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response takeTask(String filesListJson)
 	{
 		String[] filesList = null;

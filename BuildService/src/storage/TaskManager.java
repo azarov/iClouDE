@@ -9,12 +9,18 @@ import entities.*;
 public class TaskManager {
 
 	
-	private static TaskManager instance = new TaskManager();
+	private static TaskManager instance = null;
 	private LinkedList<Task> queue;
 	
 	private TaskManager()
 	{
-		queue = new LinkedList<>();
+		if (instance == null) {
+			synchronized (TaskManager.class) {
+				if (instance == null) {
+					instance = new TaskManager();
+				}
+			}
+		}
 	}
 	
 	public static TaskManager getInstance()
