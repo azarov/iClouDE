@@ -12,8 +12,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import storage.TaskManager;
+
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+
+import entities.Task;
 
 @Path("/file")
 public class UploadFileService {
@@ -36,6 +41,7 @@ public class UploadFileService {
 	        throws IOException
 	{
 		Response.Status respStatus = Response.Status.OK;
+		String output = "";
 
 		if (fileInfo == null)
 		{
@@ -44,12 +50,18 @@ public class UploadFileService {
 		else
 		{
 			final String fileName = fileInfo.getFileName();
-			String uploadedFileLocation = FILE_UPLOAD_PATH + File.separator
-			        + fileName;
+			String uploadedFileLocation = FILE_UPLOAD_PATH + fileName;
+			output = "File uploaded to : " + uploadedFileLocation;
 
 			try
 			{
 				saveToDisc(uploadedInputStream, uploadedFileLocation);
+				
+				Task task = new Task();
+				task.setFullPathToZip(uploadedFileLocation);
+				
+				TaskManager taskManager = TaskManager.getInstance();
+				taskManager.add(task);
 			}
 			catch (Exception e)
 			{
@@ -57,8 +69,9 @@ public class UploadFileService {
 				e.printStackTrace();
 			}
 		}
-
-		return Response.status(respStatus).build();
+		
+		
+		return Response.status(respStatus).entity(output).build();
 	}
 
 	// save uploaded file to the specified location
