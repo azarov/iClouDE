@@ -1,7 +1,6 @@
 package resources;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.NoSuchElementException;
 
 import javax.ws.rs.GET;
@@ -11,27 +10,32 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import storage.TasksQueue;
+import com.google.gson.Gson;
+
+import entities.Task;
+
+import taskManagement.TasksQueue;
 
 @Path("/inner/get_task")
 public class InnerGetTaskService {
 
 	@GET
-	@Produces("plain/text")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTask()
 	{
 		TasksQueue taskManager = TasksQueue.getInstance();
 		Response.Status status = Status.OK; 
-		URI path = null;
 		
-		//TODO: change return value of getNext() if queue is empty to null
-		try {
-			path = taskManager.getNext().getFullPathToZip();
-		} catch (NoSuchElementException e) {
-			status = Status.NO_CONTENT;
-			return Response.status(status).build();
-		}
+		Task nextTask = taskManager.getNext();
 		
-		return Response.status(status).type(MediaType.TEXT_PLAIN).entity(path).build();
+		String message = composeMessage(nextTask);
+		
+		return Response.status(status).entity(message).build();
+	}
+	
+	public String composeMessage(Task task)
+	{
+		Gson gson = new Gson();
+		return gson.toJson(task);
 	}
 }

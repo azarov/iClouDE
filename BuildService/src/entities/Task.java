@@ -12,7 +12,6 @@ public class Task {
 	private TaskStatus status;
 	private String compileParameters;
 	private String compilator;
-	private BuildResult buildResult;
 	
 	private static IdProvider idProvider = new IdProvider();
 	
@@ -21,7 +20,6 @@ public class Task {
 		this.fullPathToZip = fullPathToZip;
 		id = idProvider.getNextId();
 		status = TaskStatus.NOT_BUILDED;
-		buildResult = null;
 	}
 
 	public int getId() {
@@ -58,14 +56,6 @@ public class Task {
 
 	public void setCompilator(String compilator) {
 		this.compilator = compilator;
-	}
-
-	public BuildResult getBuildResult() {
-		return buildResult;
-	}
-
-	public void setBuildResult(BuildResult buildResult) {
-		this.buildResult = buildResult;
 	}
 
 	public URI getFullPathToZip() {
