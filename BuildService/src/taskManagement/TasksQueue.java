@@ -47,12 +47,16 @@ public class TasksQueue {
 	
 	public Task getNext()
 	{
-		Task first = readyQueue.peek();
+		Task first = null;
 		
-		if (first != null) {
-			processingQueue.add(first);
-			first.setStatus(TaskStatus.IN_PROCESS);			
+		if (readyQueue.isEmpty()) {
+			return null;
 		}
+		
+		first = readyQueue.pop();
+		processingQueue.add(first);
+		first.setStatus(TaskStatus.IN_PROCESS);			
+		
 		
 		return first;
 	}
@@ -87,6 +91,8 @@ public class TasksQueue {
 			throw new KeyNotFoundException("No tasks found with id "+buildResult.getTaskId()+". No results will be saved");
 		}
 		
+		processingQueue.remove(task); //not enough efficiently
+		
 		if (buildResult.getBuildStatus() == BuildStatus.SUCCESSFUL) {			
 			task.setStatus(TaskStatus.BUILDED);
 		}
@@ -103,7 +109,7 @@ public class TasksQueue {
 		performedTasksQueue.clear();
 	}
 	
-	private Task findTaskWithId(Collection<Task> tasks, int id)
+	private Task findTaskWithId(LinkedList<Task> tasks, int id)
 	{
 		for (Task t : tasks) {
 			if (t.getId() == id) {

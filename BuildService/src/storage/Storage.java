@@ -19,7 +19,7 @@ public class Storage {
 	{
 		String uploadedFileLocation = FILE_UPLOAD_PATH + fileName;
 		saveToDisc(inputStream, uploadedFileLocation);
-		URI uri = new URI("file:///"+FILE_UPLOAD_PATH);
+		URI uri = new URI("file:///"+uploadedFileLocation);
 		Task task = new Task(uri);
 		return task;
 	}
