@@ -1,14 +1,75 @@
 package entities;
 
-public class Task {
-	private String fullPathToZip;
+import java.net.URI;
 
-	public String getFullPathToZip() {
-		return fullPathToZip;
+/**
+ * This class contains entire information about task and building result.
+ */
+public class Task {
+	private int id;
+	private URI fullPathToZip;
+	private String languageType;
+	private TaskStatus status;
+	private String compileParameters;
+	private String compilator;
+	private BuildResult buildResult;
+	
+	private static IdProvider idProvider = new IdProvider();
+	
+	public Task(URI fullPathToZip) {
+		super();
+		this.fullPathToZip = fullPathToZip;
+		id = idProvider.getNextId();
+		status = TaskStatus.NOT_BUILDED;
+		buildResult = null;
 	}
 
-	public void setFullPathToZip(String fullPathToZip) {
-		this.fullPathToZip = fullPathToZip;
+	public int getId() {
+		return id;
+	}
+
+	public String getLanguageType() {
+		return languageType;
+	}
+
+	public void setLanguageType(String languageType) {
+		this.languageType = languageType;
+	}
+
+	public TaskStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(TaskStatus status) {
+		this.status = status;
+	}
+
+	public String getCompileParameters() {
+		return compileParameters;
+	}
+
+	public void setCompileParameters(String compileParameters) {
+		this.compileParameters = compileParameters;
+	}
+
+	public String getCompilator() {
+		return compilator;
+	}
+
+	public void setCompilator(String compilator) {
+		this.compilator = compilator;
+	}
+
+	public BuildResult getBuildResult() {
+		return buildResult;
+	}
+
+	public void setBuildResult(BuildResult buildResult) {
+		this.buildResult = buildResult;
+	}
+
+	public URI getFullPathToZip() {
+		return fullPathToZip;
 	}
 	
 	

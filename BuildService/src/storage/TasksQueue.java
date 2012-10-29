@@ -6,25 +6,25 @@ import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import entities.*;
 
-public class TaskManager {
-
+public class TasksQueue {
 	
-	private static TaskManager instance = null;
+	private static volatile TasksQueue instance = null;
 	private LinkedList<Task> queue;
 	
-	private TaskManager()
+	private TasksQueue()
+	{
+		queue = new LinkedList<Task>();
+	}
+	
+	public static TasksQueue getInstance()
 	{
 		if (instance == null) {
-			synchronized (TaskManager.class) {
+			synchronized (TasksQueue.class) {
 				if (instance == null) {
-					instance = new TaskManager();
+					instance = new TasksQueue();
 				}
 			}
 		}
-	}
-	
-	public static TaskManager getInstance()
-	{
 		return instance;
 	}
 	

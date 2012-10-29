@@ -5,6 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,8 +15,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.ws.soap.AddressingFeature.Responses;
 
-import storage.TaskManager;
+import storage.Storage;
+import storage.TasksQueue;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
@@ -21,7 +26,7 @@ import com.sun.jersey.multipart.FormDataParam;
 import entities.Task;
 
 @Path("/file")
-public class UploadFileService {
+public class FileUploadService {
 	
 	private static final String FILE_UPLOAD_PATH = "d:/uploaded/";
 	private static final int BUFFER_SIZE = 1024;
@@ -50,45 +55,31 @@ public class UploadFileService {
 		else
 		{
 			final String fileName = fileInfo.getFileName();
-			String uploadedFileLocation = FILE_UPLOAD_PATH + fileName;
-			output = "File uploaded to : " + uploadedFileLocation;
-
+	
 			try
 			{
-				saveToDisc(uploadedInputStream, uploadedFileLocation);
+				Storage storage = new Storage(); //TODO: may be singleton will be better 
+				Task task = storage.saveFile(uploadedInputStream, fileName);
+				output = "File uploaded to : " + task.getFullPathToZip().toString();
 				
-				Task task = new Task();
-				task.setFullPathToZip(uploadedFileLocation);
-				
-				TaskManager taskManager = TaskManager.getInstance();
+				TasksQueue taskManager = TasksQueue.getInstance();
 				taskManager.add(task);
+			}
+			catch (IOException e)
+			{
+				//TODO: think about another way to handling such type exceptions
+				respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+				output = e.getMessage();
+				e.printStackTrace();
 			}
 			catch (Exception e)
 			{
 				respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+				output = e.getMessage();
 				e.printStackTrace();
 			}
 		}
 		
-		
 		return Response.status(respStatus).entity(output).build();
-	}
-
-	// save uploaded file to the specified location
-	private void saveToDisc(final InputStream fileInputStream,
-	        final String fileUploadPath) throws IOException
-	{
-
-		final OutputStream out = new FileOutputStream(new File(fileUploadPath));
-		int read = 0;
-		byte[] bytes = new byte[BUFFER_SIZE];
-
-		while ((read = fileInputStream.read(bytes)) != -1)
-		{
-			out.write(bytes, 0, read);
-		}
-
-		out.flush();
-		out.close();
 	}
 }
