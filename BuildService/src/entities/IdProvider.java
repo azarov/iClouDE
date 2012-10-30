@@ -2,10 +2,10 @@ package entities;
 
 public class IdProvider {
 	
-	private int id = 0;
+	private static int id = 0;
 	
-	public int getNextId()
+	public static String getNextId()
 	{
-		return id++;
+		return String.valueOf(id++);
 	}
 }

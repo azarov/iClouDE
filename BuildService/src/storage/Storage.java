@@ -10,6 +10,10 @@ import java.net.URISyntaxException;
 
 import entities.Task;
 
+/**
+ * This class saves input file. 
+ *
+ */
 public class Storage {
 	
 	private static final String FILE_UPLOAD_PATH = "D:/uploaded/";

@@ -7,20 +7,20 @@ import java.net.URI;
  *
  */
 public class BuildResult {
-	private int taskId;
+	private String taskId;
 	private URI compiledSourcesPath;
 	private URI logs;
 	private BuildStatus buildStatus;
 	private String message;
 	
-	public BuildResult(int taskId, BuildStatus status, String message)
+	public BuildResult(String taskId, BuildStatus status, String message)
 	{
 		this.taskId = taskId;
 		this.buildStatus = status;
 		this.message = message;
 	}
 
-	public int getTaskId() {
+	public String getTaskId() {
 		return taskId;
 	}
 

@@ -6,23 +6,21 @@ import java.net.URI;
  * This class contains entire information about task and building result.
  */
 public class Task {
-	private int id;
+	private String id;
 	private URI fullPathToZip;
 	private String languageType;
 	private TaskStatus status;
 	private String compileParameters;
 	private String compilator;
 	
-	private static IdProvider idProvider = new IdProvider();
-	
 	public Task(URI fullPathToZip) {
 		super();
 		this.fullPathToZip = fullPathToZip;
-		id = idProvider.getNextId();
+		id = IdProvider.getNextId();
 		status = TaskStatus.NOT_BUILDED;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 

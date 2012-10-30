@@ -1,8 +1,5 @@
 package resources;
 
-import java.net.URI;
-import java.util.NoSuchElementException;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -10,11 +7,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import taskManagement.TasksQueue;
+
 import com.google.gson.Gson;
 
 import entities.Task;
-
-import taskManagement.TasksQueue;
 
 @Path("/inner/get_task")
 public class InnerGetTaskService {

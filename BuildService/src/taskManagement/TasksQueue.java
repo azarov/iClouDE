@@ -1,37 +1,40 @@
 package taskManagement;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
-
-import com.sun.research.ws.wadl.Link;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import entities.BuildResult;
 import entities.BuildStatus;
 import entities.Task;
 import entities.TaskStatus;
 
-//TODO: to think about thread-safety of this class
 public class TasksQueue {
 	
 	private static volatile TasksQueue instance = null;
-	private LinkedList<Task> readyQueue;
-	private LinkedList<Task> processingQueue;
-	private LinkedList<Task> performedTasksQueue;
-	private HashMap<Integer, BuildResult> results; //or HashMap<Int, List<BuildResult>> to save history of results
+	
+	private static Object lockObject = new Object();
+	private Object saveResultLock = new Object(); 
+	
+	private Map<String, Task> queue;
+	private ConcurrentHashMap<String, Task> performedTasks;
+	private ConcurrentHashMap<String, BuildResult> results; //or HashMap<Int, List<BuildResult>> to save history of results
 	
 	private TasksQueue()
 	{
-		readyQueue = new LinkedList<Task>();
-		processingQueue = new LinkedList<Task>();
-		performedTasksQueue = new LinkedList<Task>();
-		results = new HashMap<Integer, BuildResult>();
+		//getting synchronized map that maintains insertion order
+		queue = Collections.synchronizedMap(new LinkedHashMap<String, Task>());
+		performedTasks = new ConcurrentHashMap<>();
+		results = new ConcurrentHashMap<String, BuildResult>();
 	}
 	
 	public static TasksQueue getInstance()
 	{
 		if (instance == null) {
-			synchronized (TasksQueue.class) {
+			synchronized (lockObject) {
 				if (instance == null) {
 					instance = new TasksQueue();
 				}
@@ -42,81 +45,80 @@ public class TasksQueue {
 	
 	public void add(Task task)
 	{
-		readyQueue.add(task);
+		queue.put(task.getId(), task);
 	}
 	
+	//O(n)
 	public Task getNext()
 	{
 		Task first = null;
 		
-		if (readyQueue.isEmpty()) {
-			return null;
+		synchronized (queue) {
+			for (Entry<String, Task> entry : queue.entrySet()) {
+				if (entry.getValue() != null && entry.getValue().getStatus() == TaskStatus.NOT_BUILDED) {
+					first = entry.getValue();
+					first.setStatus(TaskStatus.IN_PROCESS);
+					break;
+				}
+			}
 		}
-		
-		first = readyQueue.pop();
-		processingQueue.add(first);
-		first.setStatus(TaskStatus.IN_PROCESS);			
-		
 		
 		return first;
 	}
 	
+	//O(n)
 	public LinkedList<Task> getAllTasks()
 	{
-		LinkedList<Task> tasks = new LinkedList<Task>();
-		for (Task task : readyQueue) {
-			tasks.add(task);
+		LinkedList<Task> list = null;
+		synchronized (queue) {
+			list = new LinkedList<Task>(queue.values());
+			
+			synchronized (performedTasks) {
+				list.addAll(performedTasks.values());
+			}
+			
 		}
-		
-		for (Task task : processingQueue) {
-			tasks.add(task);
-		}
-		
-		for (Task task : performedTasksQueue) {
-			tasks.add(task);
-		}
-		
-		return tasks;
+		return list;
 	}
 
+	//O(1)
 	public void saveResult(BuildResult buildResult) throws KeyNotFoundException {
 		
 		if (buildResult == null) {
-			throw new IllegalArgumentException();
+			//TODO: to log this fact
+			//do nothing
+			return;
 		}
 		
-		Task task = findTaskWithId(processingQueue, buildResult.getTaskId());
-		
-		if (task == null) {
-			throw new KeyNotFoundException("No tasks found with id "+buildResult.getTaskId()+". No results will be saved");
+		synchronized (saveResultLock) {
+			Task task = queue.get(buildResult.getTaskId());
+			
+			if (task == null) {
+				throw new KeyNotFoundException("No tasks found with id "+buildResult.getTaskId()+". No results will be saved");
+			}
+			
+			queue.remove(buildResult.getTaskId());
+			
+			setTaskRespectivelyBuildStatus(task, buildResult.getBuildStatus());
+			
+			performedTasks.put(task.getId(), task);
+			results.put(buildResult.getTaskId(), buildResult);
 		}
-		
-		processingQueue.remove(task); //not enough efficiently
-		
-		if (buildResult.getBuildStatus() == BuildStatus.SUCCESSFUL) {			
-			task.setStatus(TaskStatus.BUILDED);
-		}
-		else if (buildResult.getBuildStatus() == BuildStatus.FAILED) {
-			task.setStatus(TaskStatus.NOT_BUILDED);
-		}
-		
-		performedTasksQueue.add(task);
-		results.put(buildResult.getTaskId(), buildResult);
 	}
 	
 	public void clearPerformedTaskQueue()
 	{
-		performedTasksQueue.clear();
+		performedTasks.clear();
 	}
 	
-	private Task findTaskWithId(LinkedList<Task> tasks, int id)
+	private void setTaskRespectivelyBuildStatus(Task task, BuildStatus buildStatus)
 	{
-		for (Task t : tasks) {
-			if (t.getId() == id) {
-				return t;
-			}
+		if (buildStatus == BuildStatus.SUCCESSFUL) {			
+			task.setStatus(TaskStatus.BUILDED);
 		}
-		return null;
+		else if (buildStatus == BuildStatus.FAILED) {
+			task.setStatus(TaskStatus.NOT_BUILDED);
+		}
 	}
 	
 }

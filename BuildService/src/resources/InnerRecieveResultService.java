@@ -1,7 +1,5 @@
 package resources;
 
-import java.util.HashMap;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,15 +10,13 @@ import taskManagement.KeyNotFoundException;
 import taskManagement.TasksQueue;
 
 import com.google.gson.Gson;
-import com.sun.jersey.api.view.Viewable;
 
 import entities.BuildResult;
-import entities.Task;
 
-public class InnerTakeTaskService {
+public class InnerRecieveResultService {
 	
 	@POST
-	@Path("/inner/take_task")
+	@Path("/inner/receive_result")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response takeTask(String buildResultJson)
 	{
