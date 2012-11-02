@@ -1,12 +1,15 @@
 package storage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import taskManagement.TasksQueue;
 
 import entities.Task;
 
@@ -16,8 +19,29 @@ import entities.Task;
  */
 public class Storage {
 	
+	private static volatile Storage instance = null;
+	
+	private static Object lockObject = new Object();
+	
 	private static final String FILE_UPLOAD_PATH = "D:/uploaded/";
 	private static final int BUFFER_SIZE = 1024;
+	
+	private Storage()
+	{
+		
+	}
+	
+	public static Storage getInstance()
+	{
+		if (instance == null) {
+			synchronized (lockObject) {
+				if (instance == null) {
+					instance = new Storage();
+				}
+			}
+		}
+		return instance;
+	}
 	
 	public Task saveFile(InputStream inputStream, String fileName) throws IOException, URISyntaxException
 	{
@@ -33,16 +57,24 @@ public class Storage {
 	        final String fileUploadPath) throws IOException
 	{
 
-		final OutputStream out = new FileOutputStream(new File(fileUploadPath));
-		int read = 0;
-		byte[] bytes = new byte[BUFFER_SIZE];
-
-		while ((read = fileInputStream.read(bytes)) != -1)
-		{
-			out.write(bytes, 0, read);
+		OutputStream out = null;
+		try {
+			out = new FileOutputStream(new File(fileUploadPath));
+		
+			int read = 0;
+			byte[] bytes = new byte[BUFFER_SIZE];
+	
+			while ((read = fileInputStream.read(bytes)) != -1)
+			{
+				out.write(bytes, 0, read);
+			}
+	
+			out.flush();
+			
+		} finally  {
+			if (out != null) {				
+				out.close();
+			}
 		}
-
-		out.flush();
-		out.close();
 	}
 }

@@ -49,7 +49,7 @@ public class FileUploadService {
 	
 			try
 			{
-				Storage storage = new Storage(); //TODO: may be singleton will be better 
+				Storage storage = Storage.getInstance(); 
 				Task task = storage.saveFile(uploadedInputStream, fileName);
 				output = "File uploaded to : " + task.getFullPathToZip().toString();
 				
