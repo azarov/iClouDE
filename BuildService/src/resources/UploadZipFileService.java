@@ -14,23 +14,20 @@ import javax.ws.rs.core.Response;
 import storage.Storage;
 import taskManagement.TasksQueue;
 
+import com.google.gson.Gson;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
+import entities.UploadFileResponse;
+import entities.IdProvider;
 import entities.Task;
 
-@Path("/file")
-public class FileUploadService {
-	
-	@GET
-	@Produces("text/plain")
-	public String getClichedMessage() {
-		return "Hello World";
-	}
+@Path("/uploadzipfile")
+public class UploadZipFileService {
 	
 	@POST
-	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response fileUpload(
 	        @FormDataParam("file") InputStream uploadedInputStream,
 	        @FormDataParam("file") FormDataContentDisposition fileInfo)
@@ -51,22 +48,26 @@ public class FileUploadService {
 			{
 				Storage storage = Storage.getInstance(); 
 				Task task = storage.saveFile(uploadedInputStream, fileName);
-				output = "File uploaded to : " + task.getFullPathToZip().toString();
 				
-				TasksQueue taskManager = TasksQueue.getInstance();
-				taskManager.add(task);
+				UploadFileResponse response = new UploadFileResponse(task.getId(), true);
+				Gson gson = new Gson();
+				output = gson.toJson(response);
+				
+				//TODO: to log it
+				//output = "File uploaded to : " + task.getFullPathToZip().toString();
+				
+				//TasksQueue taskManager = TasksQueue.getInstance();
+				//taskManager.add(task);
 			}
 			catch (IOException e)
 			{
 				//TODO: to think about another way to handling such type exceptions
 				respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-				output = e.getMessage();
 				e.printStackTrace();
 			}
 			catch (Exception e)
 			{
 				respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-				output = e.getMessage();
 				e.printStackTrace();
 			}
 		}

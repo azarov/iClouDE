@@ -18,7 +18,7 @@ public class InnerRecieveResultService {
 	@POST
 	@Path("/inner/receive_result")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response takeTask(String buildResultJson)
+	public Response receiveResult(String buildResultJson)
 	{
 		Gson gson = new Gson();
 		BuildResult buildResult = gson.fromJson(buildResultJson, BuildResult.class);

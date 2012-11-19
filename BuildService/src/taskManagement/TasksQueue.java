@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import entities.BuildResult;
 import entities.BuildStatus;
 import entities.Task;
@@ -85,8 +88,7 @@ public class TasksQueue {
 	public void saveResult(BuildResult buildResult) throws KeyNotFoundException {
 		
 		if (buildResult == null) {
-			//TODO: to log this fact
-			//do nothing
+			//logger.warn("Null build result was recieved. No result was saved.");
 			return;
 		}
 		
@@ -118,6 +120,9 @@ public class TasksQueue {
 		}
 		else if (buildStatus == BuildStatus.FAILED) {
 			task.setStatus(TaskStatus.NOT_BUILDED);
+		}
+		else {
+			//TODO: finish it later
 		}
 	}
 	

@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.sun.org.apache.xerces.internal.parsers.CachingParserPool.SynchronizedGrammarPool;
 
 import taskManagement.TasksQueue;
 
@@ -26,9 +29,11 @@ public class Storage {
 	private static final String FILE_UPLOAD_PATH = "D:/uploaded/";
 	private static final int BUFFER_SIZE = 1024;
 	
+	public ConcurrentHashMap<String, Task> tasks;
+	
 	private Storage()
 	{
-		
+		tasks = new ConcurrentHashMap<String, Task>();
 	}
 	
 	public static Storage getInstance()
@@ -49,7 +54,13 @@ public class Storage {
 		saveToDisc(inputStream, uploadedFileLocation);
 		URI uri = new URI("file:///"+uploadedFileLocation);
 		Task task = new Task(uri);
+		tasks.put(task.getId(), task);
 		return task;
+	}
+	
+	public Task getTask(String taskId)
+	{
+		return tasks.get(taskId);
 	}
 	
 	// save uploaded file to the specified location
