@@ -21,6 +21,7 @@ import entities.BuildResult;
 public class InnerRecieveResultService {
 	
 	private final Logger logger = LoggerFactory.getLogger(InnerRecieveResultService.class);
+	private final Gson gson = new Gson();
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -29,7 +30,6 @@ public class InnerRecieveResultService {
 		BuildResult buildResult = null;
 		
 		try {
-			Gson gson = new Gson();
 			buildResult = gson.fromJson(buildResultJson, BuildResult.class);
 			
 		} catch (JsonSyntaxException e1) {

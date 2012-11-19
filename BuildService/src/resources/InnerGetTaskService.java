@@ -15,7 +15,9 @@ import entities.Task;
 
 @Path("/inner/get_task")
 public class InnerGetTaskService {
-
+	
+	private final Gson gson = new Gson();
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTask()
@@ -33,7 +35,6 @@ public class InnerGetTaskService {
 	//if task is null, it makes empty json
 	public String composeMessage(Task task)
 	{
-		Gson gson = new Gson();
 		return gson.toJson(task);
 	}
 }

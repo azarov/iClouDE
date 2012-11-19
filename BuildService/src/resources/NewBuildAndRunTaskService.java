@@ -20,6 +20,8 @@ import entities.Task;
 @Path("/newbuildandruntask")
 public class NewBuildAndRunTaskService {
 
+	private final Gson gson = new Gson();
+	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -27,7 +29,6 @@ public class NewBuildAndRunTaskService {
 	{
 		Response.Status respStatus = Response.Status.OK;
 		String output = "";
-		Gson gson = new Gson();
 		try {
 			NewTaskRequest newTaskRequest = gson.fromJson(newTaskRequestMessage, NewTaskRequest.class);
 			
