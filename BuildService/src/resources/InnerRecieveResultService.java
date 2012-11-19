@@ -16,12 +16,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import entities.BuildResult;
+import entities.GsonProvider;
 
 @Path("/inner/receive_result")
 public class InnerRecieveResultService {
 	
 	private final Logger logger = LoggerFactory.getLogger(InnerRecieveResultService.class);
-	private final Gson gson = new Gson();
+	private final Gson gson = GsonProvider.getGson();
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

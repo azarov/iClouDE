@@ -16,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import utils.PropertiesManager;
+
 import entities.Task;
 
 /**
@@ -27,7 +29,8 @@ public class Storage {
 	private static volatile Storage instance = null;
 	private static Object lockObject = new Object();
 	
-	private String FILE_UPLOAD_PATH = "D:/uploaded/";
+	private final static String DefaultFileUploadPath = "D:/uploaded/";  
+	private String fileUploadPath;
 	private final Logger logger = LoggerFactory.getLogger(Storage.class);
 	private static final int BUFFER_SIZE = 1024;
 	
@@ -36,20 +39,7 @@ public class Storage {
 	private Storage()
 	{
 		tasks = new ConcurrentHashMap<String, Task>();		
-		readFileUploadPath();
-	}
-
-	private void readFileUploadPath() {
-		Properties properties = new Properties();
-		
-		try {
-			properties.load(this.getClass().getResourceAsStream("/conf.properties"));
-		} catch (IOException e) {
-			logger.error("Can't load properties file", e);
-			return;
-		}
-		
-		FILE_UPLOAD_PATH = properties.getProperty("fileUploadPath");
+		fileUploadPath = PropertiesManager.getInstance().getProperty("fileUploadPath", DefaultFileUploadPath);
 	}
 	
 	public static Storage getInstance()
@@ -66,7 +56,7 @@ public class Storage {
 	
 	public Task saveFile(InputStream inputStream, String fileName) throws IOException, URISyntaxException
 	{
-		String uploadedFileLocation = FILE_UPLOAD_PATH + fileName;
+		String uploadedFileLocation = fileUploadPath + fileName;
 		saveToDisc(inputStream, uploadedFileLocation);
 		URI uri = new URI("file:///"+uploadedFileLocation);
 		Task task = new Task(uri);

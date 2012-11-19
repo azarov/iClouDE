@@ -13,6 +13,7 @@ import taskManagement.TasksQueue;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import entities.GsonProvider;
 import entities.NewTaskRequest;
 import entities.OperationType;
 import entities.Task;
@@ -20,7 +21,7 @@ import entities.Task;
 @Path("/newbuildandruntask")
 public class NewBuildAndRunTaskService {
 
-	private final Gson gson = new Gson();
+	private final Gson gson = GsonProvider.getGson();
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

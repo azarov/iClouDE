@@ -11,12 +11,13 @@ import taskManagement.TasksQueue;
 
 import com.google.gson.Gson;
 
+import entities.GsonProvider;
 import entities.Task;
 
 @Path("/inner/get_task")
 public class InnerGetTaskService {
 	
-	private final Gson gson = new Gson();
+	private final Gson gson = GsonProvider.getGson();
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
