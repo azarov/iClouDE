@@ -1,6 +1,7 @@
 package storage;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,11 +9,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.sun.org.apache.xerces.internal.parsers.CachingParserPool.SynchronizedGrammarPool;
-
-import taskManagement.TasksQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import entities.Task;
 
@@ -23,17 +25,31 @@ import entities.Task;
 public class Storage {
 	
 	private static volatile Storage instance = null;
-	
 	private static Object lockObject = new Object();
 	
-	private static final String FILE_UPLOAD_PATH = "D:/uploaded/";
+	private String FILE_UPLOAD_PATH = "D:/uploaded/";
+	private final Logger logger = LoggerFactory.getLogger(Storage.class);
 	private static final int BUFFER_SIZE = 1024;
 	
 	public ConcurrentHashMap<String, Task> tasks;
-	
+
 	private Storage()
 	{
-		tasks = new ConcurrentHashMap<String, Task>();
+		tasks = new ConcurrentHashMap<String, Task>();		
+		readFileUploadPath();
+	}
+
+	private void readFileUploadPath() {
+		Properties properties = new Properties();
+		
+		try {
+			properties.load(this.getClass().getResourceAsStream("/conf.properties"));
+		} catch (IOException e) {
+			logger.error("Can't load properties file", e);
+			return;
+		}
+		
+		FILE_UPLOAD_PATH = properties.getProperty("fileUploadPath");
 	}
 	
 	public static Storage getInstance()

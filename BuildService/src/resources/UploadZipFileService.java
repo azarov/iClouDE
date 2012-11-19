@@ -11,6 +11,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import storage.Storage;
 import taskManagement.TasksQueue;
 
@@ -24,6 +27,8 @@ import entities.Task;
 
 @Path("/uploadzipfile")
 public class UploadZipFileService {
+	
+	private final Logger logger = LoggerFactory.getLogger(UploadZipFileService.class);
 	
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -53,22 +58,17 @@ public class UploadZipFileService {
 				Gson gson = new Gson();
 				output = gson.toJson(response);
 				
-				//TODO: to log it
-				//output = "File uploaded to : " + task.getFullPathToZip().toString();
-				
-				//TasksQueue taskManager = TasksQueue.getInstance();
-				//taskManager.add(task);
+				logger.info("File uploaded to : " + task.getFullPathToZip().toString());
 			}
 			catch (IOException e)
 			{
-				//TODO: to think about another way to handling such type exceptions
 				respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-				e.printStackTrace();
+				logger.error("Can't save uploaded file to storage", e);
 			}
 			catch (Exception e)
 			{
 				respStatus = Response.Status.INTERNAL_SERVER_ERROR;
-				e.printStackTrace();
+				logger.error("Unknown error during making response to upload file request", e);
 			}
 		}
 		

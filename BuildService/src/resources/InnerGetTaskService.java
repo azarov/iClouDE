@@ -7,9 +7,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import taskManagement.TasksQueue;
 
 import com.google.gson.Gson;
@@ -19,8 +16,6 @@ import entities.Task;
 @Path("/inner/get_task")
 public class InnerGetTaskService {
 
-	Logger logger = LogManager.getLogger(InnerGetTaskService.class.getName());
-	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTask()
@@ -35,6 +30,7 @@ public class InnerGetTaskService {
 		return Response.status(status).entity(message).build();
 	}
 	
+	//if task is null, it makes empty json
 	public String composeMessage(Task task)
 	{
 		Gson gson = new Gson();

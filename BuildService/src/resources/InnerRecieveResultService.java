@@ -6,22 +6,37 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import taskManagement.KeyNotFoundException;
 import taskManagement.TasksQueue;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import entities.BuildResult;
 
+@Path("/inner/receive_result")
 public class InnerRecieveResultService {
 	
+	private final Logger logger = LoggerFactory.getLogger(InnerRecieveResultService.class);
+	
 	@POST
-	@Path("/inner/receive_result")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response receiveResult(String buildResultJson)
 	{
-		Gson gson = new Gson();
-		BuildResult buildResult = gson.fromJson(buildResultJson, BuildResult.class);
+		BuildResult buildResult = null;
+		
+		try {
+			Gson gson = new Gson();
+			buildResult = gson.fromJson(buildResultJson, BuildResult.class);
+			
+		} catch (JsonSyntaxException e1) {
+			logger.error("Json transformation receive_result request parameter problem", e1);
+			return Response.serverError().build();
+		}
+		
 		TasksQueue tasksQueue = TasksQueue.getInstance();
 		
 		try {

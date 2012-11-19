@@ -9,6 +9,7 @@ public class Task {
 	private String id;
 	private URI fullPathToZip;
 	private String languageType;
+	private OperationType operation;
 	private TaskStatus status;
 	private String compileParameters;
 	private String compilator;
@@ -58,6 +59,14 @@ public class Task {
 
 	public URI getFullPathToZip() {
 		return fullPathToZip;
+	}
+
+	public OperationType getOperation() {
+		return operation;
+	}
+
+	public void setOperation(OperationType operation) {
+		this.operation = operation;
 	}
 	
 	

@@ -7,9 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import entities.BuildResult;
 import entities.BuildStatus;
 import entities.Task;
@@ -21,7 +18,7 @@ public class TasksQueue {
 	
 	private static Object lockObject = new Object();
 	private Object saveResultLock = new Object(); 
-	
+
 	private Map<String, Task> queue;
 	private ConcurrentHashMap<String, Task> performedTasks;
 	private ConcurrentHashMap<String, BuildResult> results; //or HashMap<Int, List<BuildResult>> to save history of results
