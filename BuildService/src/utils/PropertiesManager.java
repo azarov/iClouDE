@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 public class PropertiesManager {
 
 	private static Object lockObject = new Object();
-	private static PropertiesManager instance = null;
+	private static volatile PropertiesManager instance = null;
 	
 	private final Logger logger = LoggerFactory.getLogger(PropertiesManager.class);
 	private static final String PathToConfig = "/conf.properties"; 

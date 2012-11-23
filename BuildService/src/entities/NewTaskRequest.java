@@ -2,7 +2,7 @@ package entities;
 
 public class NewTaskRequest {
 	private int protocolVersion;
-	private String zipId;
+	private String zipID;
 	private String languageType;
 	private String operation;
 	private String compileParameters;
@@ -21,11 +21,11 @@ public class NewTaskRequest {
 	public void setProtocolVersion(int protocolVersion) {
 		this.protocolVersion = protocolVersion;
 	}
-	public String getZipId() {
-		return zipId;
+	public String getZipID() {
+		return zipID;
 	}
-	public void setZipId(String zipId) {
-		this.zipId = zipId;
+	public void setZipID(String zipId) {
+		this.zipID = zipId;
 	}
 	public String getLanguageType() {
 		return languageType;

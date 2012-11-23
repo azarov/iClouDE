@@ -81,6 +81,11 @@ public class TasksQueue {
 		return list;
 	}
 
+	public BuildResult getResult(String taskId)
+	{
+		return results.get(taskId);
+	}
+	
 	//O(1)
 	public void saveResult(BuildResult buildResult) throws KeyNotFoundException {
 		

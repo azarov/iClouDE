@@ -1,8 +1,10 @@
 package resources;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -26,22 +28,18 @@ public class CheckTaskStatusService {
 	private final Gson gson = GsonProvider.getGson();
 	private final Logger logger = LoggerFactory.getLogger(CheckTaskStatusService.class);
 	
-	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response checktaskstatus(String taskInfo)
+	public Response checktaskstatus(@QueryParam("protocolVersion") String protocolVersion, @QueryParam("zipID") String zipId)
 	{
-		ClientRequestInfo cri = null;
 		Status status = null;
 		
-		try {
-			cri = gson.fromJson(taskInfo, ClientRequestInfo.class);
-		} catch (JsonSyntaxException e) {
-			logger.error("Can't parse json", e);
-			return Response.serverError().build();
+		if (zipId == null) {
+			logger.warn("Checking status. ZipId is null");
+			return Response.noContent().build();
 		}
 		
-		Task task = Storage.getInstance().getTask(cri.getZipID());
+		Task task = Storage.getInstance().getTask(zipId);
 		if(task != null)
 		{
 			status = createStatusResponse(task);

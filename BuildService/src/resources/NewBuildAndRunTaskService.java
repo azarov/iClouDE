@@ -7,6 +7,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import storage.Storage;
 import taskManagement.TasksQueue;
 
@@ -22,6 +25,7 @@ import entities.Task;
 public class NewBuildAndRunTaskService {
 
 	private final Gson gson = GsonProvider.getGson();
+	private Logger logger = LoggerFactory.getLogger(DownloadBuildZipFilesService.class);
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -33,7 +37,7 @@ public class NewBuildAndRunTaskService {
 		try {
 			NewTaskRequest newTaskRequest = gson.fromJson(newTaskRequestMessage, NewTaskRequest.class);
 			
-			Task task = Storage.getInstance().getTask(newTaskRequest.getZipId());
+			Task task = Storage.getInstance().getTask(newTaskRequest.getZipID());
 						
 			if (task != null) {
 				TasksQueue taskManager = TasksQueue.getInstance();
@@ -44,12 +48,14 @@ public class NewBuildAndRunTaskService {
 			else {
 				//TODO: to log it
 				//task with such id not found
-				respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+				respStatus = Response.Status.NO_CONTENT;
+				logger.warn("No tasks with id "+newTaskRequest.getZipID());
 			}
 			
 		} catch (JsonSyntaxException e) {
 			//can't parse incoming json
 			respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+			logger.error("Can't parse json", e);
 			e.printStackTrace();
 		}
 		
