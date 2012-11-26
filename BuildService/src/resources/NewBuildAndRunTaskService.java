@@ -67,6 +67,6 @@ public class NewBuildAndRunTaskService {
 		task.setCompileParameters(newTaskRequest.getCompileParameters());
 		task.setLanguageType(newTaskRequest.getLanguageType());
 		task.setOperation(OperationType.valueOf(newTaskRequest.getOperation()));
-		
+		task.setEntryPointPath(newTaskRequest.getEntryPointPath());
 	}
 }

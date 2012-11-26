@@ -13,6 +13,7 @@ public class Task {
 	private TaskStatus status;
 	private String compileParameters;
 	private String compilator;
+	private String entryPointPath;
 	
 	public Task(URI fullPathToZip) {
 		super();
@@ -67,6 +68,14 @@ public class Task {
 
 	public void setOperation(OperationType operation) {
 		this.operation = operation;
+	}
+
+	public String getEntryPointPath() {
+		return entryPointPath;
+	}
+
+	public void setEntryPointPath(String entryPointPath) {
+		this.entryPointPath = entryPointPath;
 	}
 	
 	
