@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BuildService"/>
+	<classpathentry exported="true" kind="lib" path="/home/vitalii/soft/netbeans-7.3beta2/java/ant/lib/ant.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/home/vitalii/Downloads/apache-ant-1.8.4-manual.zip!/apache-ant-1.8.4/api"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="/home/vitalii/soft/netbeans-7.3beta2/java/ant/lib/ant-launcher.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/home/vitalii/Downloads/apache-ant-1.8.4-manual.zip!/apache-ant-1.8.4/api"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/usr/java/jdk1.7.0_09/lib/tools.jar"/>
+	<classpathentry exported="true" kind="lib" path="/home/vitalii/lessons/iCloude/iClouDE/BuildService/WebContent/WEB-INF/lib/gson-2.2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="/home/vitalii/Downloads/commons-io-2.4/commons-io-2.4.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/log4j2"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/HttpClient"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
