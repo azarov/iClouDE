@@ -1,6 +1,5 @@
 package resources;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -14,14 +13,18 @@ import org.slf4j.LoggerFactory;
 import storage.Storage;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
-import entities.ClientRequestInfo;
 import entities.GsonProvider;
 import entities.Status;
 import entities.Task;
 import entities.TaskStatus;
 
+/**
+ * Service that returns well-formed response of task status. 
+ * 
+ * @author Andrew Azarov
+ *
+ */
 @Path("/checktaskstatus")
 public class CheckTaskStatusService {
 

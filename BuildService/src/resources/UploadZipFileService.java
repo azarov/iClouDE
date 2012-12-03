@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -15,16 +14,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import storage.Storage;
-import taskManagement.TasksQueue;
 
 import com.google.gson.Gson;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
 import entities.GsonProvider;
-import entities.UploadFileResponse;
-import entities.IdProvider;
 import entities.Task;
+import entities.UploadFileResponse;
 
 @Path("/uploadzipfile")
 public class UploadZipFileService {

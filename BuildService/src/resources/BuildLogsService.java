@@ -1,9 +1,7 @@
 package resources;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.HashMap;
@@ -16,7 +14,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +23,16 @@ import taskManagement.TasksQueue;
 import com.sun.jersey.api.view.Viewable;
 
 import entities.BuildResult;
-import entities.BuildStatus;
 import entities.Task;
 import entities.TaskStatus;
 
+/**
+ *
+ * This service returns html page with build logs.
+ * @param id Id of task, which build result logs we want to get
+ * 
+ * @author Andrew Azarov
+ */
 @Path("/buildLogs")
 public class BuildLogsService {
 

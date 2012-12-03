@@ -3,7 +3,7 @@
 
 <log4j:configuration debug="true" xmlns:log4j="http://jakarta.apache.org/log4j/">
    <appender name="MainLogFile" class="org.apache.log4j.FileAppender">
-   		<param name="File" value="build_service.log" />
+   		<param name="File" value="/home/users/antonk/buildservice_uploaded/build_service.log" />
    		<param name="Threshold" value="INFO" />
    		
 		<layout class="org.apache.log4j.PatternLayout">
@@ -14,7 +14,7 @@
 
 	<appender name="TraceLogFile" class="org.apache.log4j.RollingFileAppender">
 	<param name="Threshold" value="TRACE" />
-	<param name="File" value="build_service_trace.log" />
+	<param name="File" value="/home/users/antonk/buildservice_uploaded/build_service_trace.log" />
 	<param name="MaxFileSize" value="2MB" />
 	<param name="MaxBackupIndex" value="2" />
 	
