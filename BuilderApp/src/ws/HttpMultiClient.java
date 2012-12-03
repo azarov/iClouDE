@@ -34,8 +34,8 @@ import static ws.BuildServiceProperties.buildServiceProperties;
 import static ws.HttpClientProperties.httpClientProperties;
 
 /*
- * Singleton
- * or simply extend DefaultHttpClient
+ * Http client that can create connection pull to support
+ * concurrent http requests
  */
 public enum HttpMultiClient {
 	INSTANCE();

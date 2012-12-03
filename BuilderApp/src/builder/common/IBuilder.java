@@ -6,20 +6,18 @@ import java.util.concurrent.RunnableFuture;
 
 import entities.BuildResult;
 import entities.Task;
-/*
- * IBuilder: getTask + void build()
- * 
- * cancelling: can't be done from outside
- * done: determined by script
- * 
+/**
+ * The interface for a builder
  */
 public interface IBuilder{
-	Task getTask();
-	public File getLogFile();
+	//{
+	Task getTask();              
+	public File getLogFile();      
 	public File getTaskFolder();
 	public File getSrcFolder();
-	
+	//} -> remove from IBuilder -> Context?
 	RunnableFuture<BuildResult> build();
+	//void run(BuildResult r);
 	
 	
 }

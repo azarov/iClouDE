@@ -1,0 +1,9 @@
+13:18:38.823 DEBUG execution.Execution 34 main - Start execution
+13:18:39.547 TRACE builder.ant.AntBuilder 50 <init> -  entry
+13:18:39.691 TRACE builder.ant.AntBuilder 85 <init> -  exit
+13:18:41.704 DEBUG builder.ant.AntBuilder 102 call - build finished
+13:18:41.719 INFO  execution.TaskSender 50 run - {"taskId":"21","compiledSourcesPath":"file:/home/vitalii/workspace_backup/BuilderApp/21/bin/","logs":"file:/home/vitalii/workspace_backup/BuilderApp/21/log","buildStatus":"SUCCESSFUL","message":"BUILD SUCCESSFUL"}
+13:18:41.844 TRACE builder.ant.AntBuilder 50 <init> -  entry
+13:18:41.852 TRACE builder.ant.AntBuilder 85 <init> -  exit
+13:18:42.609 DEBUG builder.ant.AntBuilder 102 call - build finished
+13:18:42.611 INFO  execution.TaskSender 50 run - {"taskId":"22","compiledSourcesPath":"file:/home/vitalii/workspace_backup/BuilderApp/22/bin/","logs":"file:/home/vitalii/workspace_backup/BuilderApp/22/log","buildStatus":"SUCCESSFUL","message":"BUILD SUCCESSFUL"}

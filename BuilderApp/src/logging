@@ -1,0 +1,4 @@
+loggers:
+ - String message sent instead of build result
+ - package execution:
+ 	status of execution, # of failed tasks, failures log

@@ -27,53 +27,48 @@ import org.apache.tools.ant.ProjectHelper;
 import builder.common.AbstractBuilder;
 import builder.common.BuildException;
 
-
 import entities.BuildResult;
 import entities.BuildStatus;
 import entities.Task;
 
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-
-/*
- * TODO move to TaskProject class
- * project: src, bin, config, libs
+/**
+ * Builds java sources with Ant. Creates {@link org.apache.tools.ant.Project}
+ * from build.xml and executes compilation target
+ * 
+ * build.xml is located in the root project directory
  */
-public class AntBuilder extends AbstractBuilder implements Callable<BuildResult> {
-//	private Task task;
+public class AntBuilder extends AbstractBuilder implements
+		Callable<BuildResult> {
 	private org.apache.tools.ant.Project p;
-//	private File log;
 	private PrintStream logStream;
-	private final static Logger logger = LogManager.getLogger(
-			AntBuilder.class.getName());
-	
-	
-	public AntBuilder(Task task) throws BuildException{
+	private final static Logger logger = LogManager.getLogger(AntBuilder.class
+			.getName());
+
+	public AntBuilder(Task task) throws BuildException {
 		super(task);
-		
-		p = antProject(new File("build.xml")); // -> to constants
-		
+
+		logger.entry();
+		p = antProject(new File("build.xml"));
+
 		// Add build listener:
 		try {
-		//	log = getLogFile();
 			logStream = new PrintStream(getLogFile());
 		} catch (FileNotFoundException e) {
-			logger.error("", e);
-			throw new BuildException(IO_ERROR_AT_BUILD_INIT, e,this);
+			logger.error(e.getMessage(), e);
+			throw new BuildException(IO_ERROR_AT_BUILD_INIT, e, this);
 		}
+
+		logStream.println("message from ant proj constructor");
+
+		DefaultLogger fileLogger = new DefaultLogger();
+		// errors will be printed to output stream too
+		fileLogger.setErrorPrintStream(logStream);
+		fileLogger.setOutputPrintStream(logStream);
+		fileLogger.setMessageOutputLevel(Project.MSG_INFO);
+		p.addBuildListener(fileLogger);
 		
-		DefaultLogger consoleLogger = new DefaultLogger();
-		//errors will be printed to output stream too
-		consoleLogger.setErrorPrintStream(System.err);
-		
-		consoleLogger.setOutputPrintStream(logStream);
-		p.addBuildListener(consoleLogger);
 		p.setProperty("proj.dir", getTaskFolder().getAbsolutePath());
-		
+
 		Properties props = new Properties();
 		props.setProperty("src.dir", getSrcFolder().getAbsolutePath());
 		props.setProperty("build.dir", getBinFolder().getAbsolutePath());
@@ -83,13 +78,14 @@ public class AntBuilder extends AbstractBuilder implements Callable<BuildResult>
 			props.store(out, "--- task properties ---");
 			out.close();
 		} catch (IOException e) {
-			logger.error("", e);
+			logger.error(e.getMessage(), e);
 			throw new BuildException(IO_ERROR_AT_BUILD_INIT, e, this);
 		}
+		// logStream.close();
+		logger.exit();
 
 	}
 
-	
 	private File getBinFolder() {
 		File dir = new File(getTaskFolder().getPath() + "/bin");
 		if (!dir.exists()) {
@@ -103,15 +99,19 @@ public class AntBuilder extends AbstractBuilder implements Callable<BuildResult>
 		try {
 			p.fireBuildStarted();
 			p.executeTarget("compile.all");
+			AntBuilder.logger.debug("build finished");
 		} catch (Exception e) {
 			p.fireBuildFinished(e);
-			builder.common.BuildException buildException = new BuildException("", e, this);
+			logger.error(e.getMessage(), e);
+			builder.common.BuildException buildException = new BuildException(
+					"", e, this);
 			return buildException.constructBuildResult();
 		}
 
-		BuildResult r = new BuildResult(getTask().getId(), BuildStatus.SUCCESSFUL, "BUILD SUCCESSFUL");
+		BuildResult r = new BuildResult(getTask().getId(),
+				BuildStatus.SUCCESSFUL, "BUILD SUCCESSFUL");
 		r.setLogs(getLogFile().toURI());
-		r.setCompiledSourcesPath(getBinFolder().toURI()); 
+		r.setCompiledSourcesPath(getBinFolder().toURI());
 		return r;
 	}
 
@@ -124,11 +124,9 @@ public class AntBuilder extends AbstractBuilder implements Callable<BuildResult>
 		return p;
 	}
 
-
 	@Override
 	public RunnableFuture<BuildResult> build() {
 		return new FutureTask<BuildResult>(this);
 	}
-
 
 }

@@ -22,7 +22,13 @@ import org.apache.logging.log4j.Logger;
 
 import entities.Task;
 
-
+/**
+ * Class constructs common directories structure for a builder
+ * Sets up src and bin directories and unpacks zip with sources into src.
+ * 
+ * @author vitalii
+ *
+ */
 public abstract class AbstractBuilder implements IBuilder{
 	
 	public final static String IO_ERROR_AT_BUILD_INIT=

@@ -13,16 +13,25 @@ import org.apache.logging.log4j.MarkerManager;
 
 import ws.BuildServiceProperties;
 import ws.HttpMultiClient;
-import ws.TaskLauncher;
-import ws.TaskSender;
 import static execution.ExecutionProperties.executionProperties;
 
-//TODO add ExecutionProperties
+/**
+ * Class with main method 
+ * @author vitalii
+ *
+ */
 public class Execution {
 
-	private static Logger logger = LogManager.getLogger(Execution.class.getName());
+	private static Logger logger;// = LogManager.getLogger(Execution.class.getName());
+	
+	static{
+		System.setProperty("log4j.configurationFile", "" +
+				"/home/vitalii/workspace_backup/BuilderApp/src/log4j2.xml");
+		logger = LogManager.getLogger(Execution.class.getName());
+	}
 	
 	public static void main(String[] args){
+		logger.debug("Start execution");
 		ExecutorService executor = Executors.newFixedThreadPool(
 				executionProperties().executionThreadsNumber);
 		Timer timer = new Timer();
