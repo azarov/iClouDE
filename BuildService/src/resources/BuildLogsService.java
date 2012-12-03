@@ -65,6 +65,7 @@ public class BuildLogsService {
 			{
 				try {
 					String buildLogs = getBuildLogs(br.getLogs());
+					buildLogs = transformToHTMLViewableFormat(buildLogs);
 					map.put("buildLog", buildLogs);
 				} catch (MalformedURLException e) {
 					logger.error("Build result for task " + task.getId() + " contains invalid link to logs", e);
@@ -82,7 +83,7 @@ public class BuildLogsService {
 		
 		return Response.ok().entity(new Viewable("/buildLogsView", map)).build();
 	}
-	
+
 	private String getBuildLogs(URI pathToLogs) throws MalformedURLException, IOException
 	{
 		InputStream in = pathToLogs.toURL().openStream();
@@ -92,5 +93,9 @@ public class BuildLogsService {
 	public static String convertStreamToString(java.io.InputStream is) {
 	    java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
 	    return s.hasNext() ? s.next() : "";
+	}
+	
+	private String transformToHTMLViewableFormat(String buildLogs) {
+		return buildLogs.replaceAll("\n", "<br/>");
 	}
 }
