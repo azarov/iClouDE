@@ -1,5 +1,7 @@
 package resources;
 
+import java.util.Calendar;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -26,6 +28,7 @@ public class NewBuildAndRunTaskService {
 
 	private final Gson gson = GsonProvider.getGson();
 	private Logger logger = LoggerFactory.getLogger(DownloadBuildZipFilesService.class);
+	private Logger mainLogger = LoggerFactory.getLogger("mainLogger");
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -44,10 +47,10 @@ public class NewBuildAndRunTaskService {
 
 				setAdditionalParameters(task, newTaskRequest);
 				taskManager.add(task);
+				task.setQueuingTime(Calendar.getInstance().getTime());
+				mainLogger.info("Task {} was placed in the queue at {}.", task.getId(), task.getQueuingTime());
 			}
 			else {
-				//TODO: to log it
-				//task with such id not found
 				respStatus = Response.Status.NO_CONTENT;
 				logger.warn("No tasks with id "+newTaskRequest.getZipID());
 			}
@@ -56,7 +59,6 @@ public class NewBuildAndRunTaskService {
 			//can't parse incoming json
 			respStatus = Response.Status.INTERNAL_SERVER_ERROR;
 			logger.error("Can't parse json", e);
-			e.printStackTrace();
 		}
 		
 		return Response.status(respStatus).entity(output).build();

@@ -14,6 +14,9 @@
 			<th>Id</th>
 			<th>Path</th>
 			<th>Status</th>
+			<th>Queuing time</th>
+			<th>Compilation start time</th>
+			<th>Show build logs</th>
 		</tr>
 
 		<c:forEach var="task" items="${it.tasks}">
@@ -21,6 +24,9 @@
 				<th> <c:out value="${task.id}" /> </th>
 				<th> <c:out value="${task.fullPathToZip}" /> </th>
 				<th> <c:out value="${task.status}" /> </th>
+				<th> <c:out value="${task.queuingTime}" /> </th>
+				<th> <c:out value="${task.complitaionStartTime}" /> </th>
+				<th> <a href="buildLogs?id=${task.id}" target="_new">show logs</a> </th>				
 			</tr>
 		</c:forEach>
 	</table>

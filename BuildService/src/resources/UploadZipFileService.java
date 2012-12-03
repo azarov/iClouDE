@@ -30,6 +30,7 @@ import entities.Task;
 public class UploadZipFileService {
 	
 	private final Logger logger = LoggerFactory.getLogger(UploadZipFileService.class);
+	private final Logger mainLogger = LoggerFactory.getLogger("mainLogger");
 	private Gson gson = GsonProvider.getGson();
 	
 	@POST
@@ -61,6 +62,7 @@ public class UploadZipFileService {
 				output = gson.toJson(response);
 				
 				logger.info("File uploaded to : " + task.getFullPathToZip().toString());
+				mainLogger.info("Received new project. It was given a {} id", task.getId());
 			}
 			catch (IOException e)
 			{

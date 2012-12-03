@@ -1,5 +1,7 @@
 package resources;
 
+import java.util.Calendar;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -22,6 +24,7 @@ import entities.GsonProvider;
 public class InnerRecieveResultService {
 	
 	private final Logger logger = LoggerFactory.getLogger(InnerRecieveResultService.class);
+	private final Logger mainLogger = LoggerFactory.getLogger("mainLogger");
 	private final Gson gson = GsonProvider.getGson();
 	
 	@POST
@@ -42,6 +45,7 @@ public class InnerRecieveResultService {
 		
 		try {
 			tasksQueue.saveResult(buildResult);
+			mainLogger.info("Build result for task {} was received.", buildResult.getTaskId());
 		} catch (KeyNotFoundException e) {
 			logger.error("No task with such id");
 			return Response.serverError().entity(e.getMessage()).build();

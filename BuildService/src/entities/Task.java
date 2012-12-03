@@ -1,6 +1,7 @@
 package entities;
 
 import java.net.URI;
+import java.util.Date;
 
 /**
  * This class contains entire information about task and building result.
@@ -14,6 +15,8 @@ public class Task {
 	private String compileParameters;
 	private String compilator;
 	private String entryPointPath;
+	private Date queuingTime;
+	private Date complitaionStartTime;
 	
 	public Task(URI fullPathToZip) {
 		super();
@@ -76,6 +79,22 @@ public class Task {
 
 	public void setEntryPointPath(String entryPointPath) {
 		this.entryPointPath = entryPointPath;
+	}
+
+	public Date getQueuingTime() {
+		return queuingTime;
+	}
+
+	public void setQueuingTime(Date queuingTime) {
+		this.queuingTime = queuingTime;
+	}
+
+	public Date getComplitaionStartTime() {
+		return complitaionStartTime;
+	}
+
+	public void setComplitaionStartTime(Date complitaionStartTime) {
+		this.complitaionStartTime = complitaionStartTime;
 	}
 	
 	
