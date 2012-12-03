@@ -2,17 +2,14 @@ package resources;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URI;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
@@ -21,12 +18,11 @@ import org.slf4j.LoggerFactory;
 
 import storage.Storage;
 import taskManagement.TasksQueue;
+import utils.Protocol;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
 import entities.BuildResult;
-import entities.ClientRequestInfo;
 import entities.GsonProvider;
 import entities.Task;
 
@@ -38,9 +34,13 @@ public class DownloadBuildZipFilesService {
 	
 	@GET
 	@Produces("application/zip")
-	public Response DownloadBuildZipFiles(@QueryParam("protocolVersion") String protocolVersion, @QueryParam("zipID") String zipId)
+	public Response DownloadBuildZipFiles(@QueryParam("protocolVersion") int protocolVersion, @QueryParam("zipID") String zipId)
 	{
 		StreamingOutput stream = null;
+		
+		if (!Protocol.checkVersion(protocolVersion)) {
+			return Response.noContent().build();
+		}
 		
 		Task task = Storage.getInstance().getTask(zipId);
 		if(task != null)
@@ -56,12 +56,19 @@ public class DownloadBuildZipFilesService {
 			}
 			
 			stream = new StreamingOutput() {
-				
+				 
 				@Override
 				public void write(OutputStream outputStream) throws IOException,
 						WebApplicationException {
-					copyStream(zipUri.toURL().openStream(), outputStream);
-					outputStream.close();
+					try {
+						copyStream(zipUri.toURL().openStream(), outputStream);
+					} catch (IOException e) {
+						logger.error("Error writing in a stream.", e);
+					}
+					finally
+					{						
+						outputStream.close();
+					}
 				}
 			};
 		}
@@ -74,16 +81,19 @@ public class DownloadBuildZipFilesService {
 		return Response.ok(stream).build();
 	}
 	
-	private static void copyStream(InputStream input, OutputStream output)
+	private void copyStream(InputStream input, OutputStream output)
 		    throws IOException
 		{
 		    byte[] buffer = new byte[1024];
-		    int bytesRead;
+		    int bytesRead = 0;
+		    int streamSize = 0;
 		    while ((bytesRead = input.read(buffer)) != -1)
 		    {
 		        output.write(buffer, 0, bytesRead);
+		        streamSize += bytesRead;
 		    }
 		    
 		    output.flush();
+		    logger.debug("Readed zip file size : {}", streamSize); 
 		}
 }

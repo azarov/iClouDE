@@ -43,7 +43,7 @@ public class InnerRecieveResultService {
 		try {
 			tasksQueue.saveResult(buildResult);
 		} catch (KeyNotFoundException e) {
-			e.printStackTrace();
+			logger.error("No task with such id");
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		

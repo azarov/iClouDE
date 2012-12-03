@@ -24,8 +24,6 @@ public class BuildResult {
 		return taskId;
 	}
 
-
-
 	public URI getCompiledSourcesPath() {
 		return compiledSourcesPath;
 	}

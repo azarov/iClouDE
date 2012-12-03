@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
+import entities.GsonProvider;
 import entities.UploadFileResponse;
 import entities.IdProvider;
 import entities.Task;
@@ -29,6 +30,7 @@ import entities.Task;
 public class UploadZipFileService {
 	
 	private final Logger logger = LoggerFactory.getLogger(UploadZipFileService.class);
+	private Gson gson = GsonProvider.getGson();
 	
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -55,7 +57,7 @@ public class UploadZipFileService {
 				Task task = storage.saveFile(uploadedInputStream, fileName);
 				
 				UploadFileResponse response = new UploadFileResponse(task.getId(), true);
-				Gson gson = new Gson();
+				
 				output = gson.toJson(response);
 				
 				logger.info("File uploaded to : " + task.getFullPathToZip().toString());
