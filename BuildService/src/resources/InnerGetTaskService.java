@@ -35,8 +35,12 @@ public class InnerGetTaskService {
 		Task nextTask = taskManager.getNext();
 		
 		String message = composeMessage(nextTask);
-		nextTask.setComplitaionStartTime(Calendar.getInstance().getTime());
-		mainLogger.info("Task {} was sent to compilation at {}", nextTask.getComplitaionStartTime());
+		if (nextTask != null) 
+		{
+			nextTask.setComplitaionStartTime(Calendar.getInstance().getTime());
+			mainLogger.info("Task {} was sent to compilation at {}", nextTask.getComplitaionStartTime());
+		}
+		
 		return Response.status(status).entity(message).build();
 	}
 	
