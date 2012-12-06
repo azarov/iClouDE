@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.URI;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -21,8 +22,10 @@ import taskManagement.TasksQueue;
 import utils.Protocol;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import entities.BuildResult;
+import entities.ClientRequestInfo;
 import entities.GsonProvider;
 import entities.Task;
 
@@ -32,15 +35,31 @@ public class DownloadBuildZipFilesService {
 	private Gson gson = GsonProvider.getGson();
 	private Logger logger = LoggerFactory.getLogger(DownloadBuildZipFilesService.class);
 	
-	@GET
+	@POST
 	@Produces("application/zip")
-	public Response DownloadBuildZipFiles(@QueryParam("protocolVersion") int protocolVersion, @QueryParam("zipID") String zipId)
+//	public Response DownloadBuildZipFiles(@QueryParam("protocolVersion") int protocolVersion, @QueryParam("zipID") String zipId)
+	public Response DownloadBuildZipFiles(String criJson)
 	{
 		StreamingOutput stream = null;
-		
-		if (!Protocol.checkVersion(protocolVersion)) {
+		ClientRequestInfo cri = null; 
+
+		try {
+			cri = gson.fromJson(criJson, ClientRequestInfo.class);
+		} catch (JsonSyntaxException e) {
+			logger.error("Json transformation checktaskstatus request parameter problem", e);
 			return Response.noContent().build();
 		}
+		
+		if (cri == null) {
+			logger.error("checktaskstatus request null argument");
+			return Response.noContent().build();
+		}
+		
+		if (!Protocol.checkVersion(cri.getProtocolVersion())) {
+			return Response.noContent().build();
+		}
+		
+		String zipId = cri.getZipID();
 		
 		Task task = Storage.getInstance().getTask(zipId);
 		if(task != null)

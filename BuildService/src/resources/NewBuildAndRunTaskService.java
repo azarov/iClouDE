@@ -27,7 +27,7 @@ import entities.Task;
 public class NewBuildAndRunTaskService {
 
 	private final Gson gson = GsonProvider.getGson();
-	private Logger logger = LoggerFactory.getLogger(DownloadBuildZipFilesService.class);
+	private Logger logger = LoggerFactory.getLogger(NewBuildAndRunTaskService.class);
 	private Logger mainLogger = LoggerFactory.getLogger("mainLogger");
 	
 	@POST
