@@ -9,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
+import org.apache.logging.log4j.core.helpers.KeyValuePair;
 //import org.apache.logging.log4j.spi.LoggerContext;
 
 import ws.BuildServiceProperties;
@@ -27,6 +29,7 @@ public class Execution {
 	static{
 		System.setProperty("log4j.configurationFile", "" +
 				"/home/vitalii/workspace_backup/BuilderApp/src/log4j2.xml");
+		// TODO set log file name in Java code, not in XML
 		logger = LogManager.getLogger(Execution.class.getName());
 	}
 	
@@ -37,6 +40,7 @@ public class Execution {
 		Timer timer = new Timer();
 		final TaskLauncher taskLauncher = new TaskLauncher(executor);
 		
+		//KeyValuePair g;
 		timer.schedule(new TimerTask() {
 			
 			@Override

@@ -5,6 +5,9 @@ import static ws.BuildServiceProperties.buildServiceProperties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RunnableFuture;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import ws.HttpMultiClient;
 
 import com.google.gson.Gson;
@@ -25,6 +28,8 @@ public class TaskLauncher implements Runnable {
 
 	private ExecutorService executor;
 	
+	private static Logger logger = LogManager.getLogger(Execution.class.getName());
+	
 	public TaskLauncher(ExecutorService executor) {
 		this.executor = executor;
 	}
@@ -35,6 +40,10 @@ public class TaskLauncher implements Runnable {
 				.execGetRequest(buildServiceProperties().getTaskURI);
 		Gson gson = new Gson();
 		Task task = gson.fromJson(taskString, Task.class);
+		if (task == null){
+			logger.debug("No tasks yet..");
+			return;
+		}
 		RunnableFuture<BuildResult> buildProcess = null;
 		TaskSender taskSender;
 		try {

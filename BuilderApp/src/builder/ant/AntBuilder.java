@@ -19,7 +19,14 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.status.StatusLogger;
 
+import org.apache.tools.ant.BuildEvent;
+import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
@@ -29,6 +36,7 @@ import builder.common.BuildException;
 
 import entities.BuildResult;
 import entities.BuildStatus;
+import entities.OperationType;
 import entities.Task;
 
 /**
@@ -39,34 +47,100 @@ import entities.Task;
  */
 public class AntBuilder extends AbstractBuilder implements
 		Callable<BuildResult> {
+
 	private org.apache.tools.ant.Project p;
-	private PrintStream logStream;
+
+	// private PrintStream logStream;
+
 	private final static Logger logger = LogManager.getLogger(AntBuilder.class
 			.getName());
+	// StatusLogger.getLogger();
+	private static final Marker TASK_LOG = MarkerManager.getMarker("TASK_LOG");
+
+	// log messages types
+	// private static final String BUILD_LOG_MSG = "Build";
+	// private static final String RUN_LOG_MSG = "Run";
+	private static final String LOG_MSG_TYPE = "";
+
+//	private static Message buildMsg(Task task, String msg) {
+//		return new StructuredDataMessage(task.getId(), msg, LOG_MSG_TYPE);
+//	}
+
+	private void taskDebug(String msg) {
+		logger.debug(TASK_LOG, new StructuredDataMessage(task.getId(), msg,
+				LOG_MSG_TYPE));
+	}
+
+	private static void taskDebug(Task task, String msg) {
+		logger.debug(TASK_LOG, new StructuredDataMessage(task.getId(), msg,
+				LOG_MSG_TYPE));
+	}
+
+	private class AntBuildListener implements BuildListener {
+
+		@Override
+		public void taskStarted(BuildEvent event) {
+		}
+
+		@Override
+		public void taskFinished(BuildEvent event) {
+		}
+
+		@Override
+		public void targetStarted(BuildEvent event) {
+		}
+
+		@Override
+		public void targetFinished(BuildEvent event) {
+		}
+
+		@Override
+		public void messageLogged(BuildEvent event) {
+			taskDebug(event.getMessage());
+		}
+
+		@Override
+		public void buildStarted(BuildEvent event) {
+			taskDebug("Ant build started");
+		}
+
+		@Override
+		public void buildFinished(BuildEvent event) {
+			taskDebug("Ant build finished");
+			// TODO can't see this in the log
+		}
+	};
 
 	public AntBuilder(Task task) throws BuildException {
 		super(task);
 
-		logger.entry();
+		taskDebug(task, "Building task " + task.getId() + " using Ant");
+		taskDebug(
+				task,
+				"Build parameters: \n" + "Main class: "
+						+ task.getEntryPointPath());
+		// taskDebug(msg)
+
 		p = antProject(new File("build.xml"));
 
 		// Add build listener:
-		try {
-			logStream = new PrintStream(getLogFile());
-		} catch (FileNotFoundException e) {
-			logger.error(e.getMessage(), e);
-			throw new BuildException(IO_ERROR_AT_BUILD_INIT, e, this);
-		}
+		// try {
+		// logStream = new PrintStream(getLogFile());
+		// } catch (FileNotFoundException e) {
+		// logger.error(e.getMessage(), e);
+		// throw new BuildException(IO_ERROR_AT_BUILD_INIT, e, this);
+		// }
 
-		logStream.println("message from ant proj constructor");
+		// logStream.println("message from ant proj constructor");
 
-		DefaultLogger fileLogger = new DefaultLogger();
-		// errors will be printed to output stream too
-		fileLogger.setErrorPrintStream(logStream);
-		fileLogger.setOutputPrintStream(logStream);
-		fileLogger.setMessageOutputLevel(Project.MSG_INFO);
-		p.addBuildListener(fileLogger);
-		
+		// DefaultLogger fileLogger = new DefaultLogger();
+		// // errors will be printed to output stream too
+		// fileLogger.setErrorPrintStream(logStream);
+		// fileLogger.setOutputPrintStream(logStream);
+		// fileLogger.setMessageOutputLevel(Project.MSG_INFO);
+		p.addBuildListener(new AntBuildListener());
+		// TODO setMessageOutputLevel
+
 		p.setProperty("proj.dir", getTaskFolder().getAbsolutePath());
 
 		Properties props = new Properties();
@@ -82,7 +156,6 @@ public class AntBuilder extends AbstractBuilder implements
 			throw new BuildException(IO_ERROR_AT_BUILD_INIT, e, this);
 		}
 		// logStream.close();
-		logger.exit();
 
 	}
 
@@ -98,8 +171,15 @@ public class AntBuilder extends AbstractBuilder implements
 	public BuildResult call() {
 		try {
 			p.fireBuildStarted();
-			p.executeTarget("compile.all");
-			AntBuilder.logger.debug("build finished");
+			if (task.getOperation() == OperationType.BUILD
+					|| task.getOperation() == OperationType.BUILD_AND_RUN) {
+				p.executeTarget("compile.all");
+			}
+			if (task.getOperation() == OperationType.BUILD_AND_RUN){
+				p.setProperty("work.dir", getBinFolder().getPath());
+				p.setProperty("classname", task.getEntryPointPath());
+				p.executeTarget("run-single");
+			}		
 		} catch (Exception e) {
 			p.fireBuildFinished(e);
 			logger.error(e.getMessage(), e);

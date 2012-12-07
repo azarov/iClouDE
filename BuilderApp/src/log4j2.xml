@@ -1,31 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="error" >
-
+<configuration status="debug">
     <appenders>
 
         <Console
-            name="Console"
-            target="SYSTEM_OUT" >
+                name="Console"
+                target="SYSTEM_OUT">
 
             <!-- <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/> -->
 
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %M - %msg%xEx%n" />
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %M - %msg%xEx%n"/>
         </Console>
 
         <File
-            name="log"
-            append="false"
-            fileName="log" >
+                name="log"
+                append="false"
+                fileName="log">
 
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
+            <MarkerFilter
+                    marker="TASK_LOG"
+                    onMatch="DENY"
+                    onMismatch="ACCEPT"/>
+
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
         </File>
+
+        <Routing name="Routing">
+
+            <MarkerFilter
+                    marker="TASK_LOG"
+                    onMatch="ACCEPT"
+                    onMismatch="DENY"/>
+
+            <Routes pattern="$${sd:id}">
+
+                <Route>
+
+                    <RollingFile name="RollingFile" fileName="${sd:id}/log"
+                                 filePattern="logs/task${sd:id}.%i.log.gz">
+
+                        <PatternLayout>
+
+                            <pattern>
+                                %d %p %C{1.} [%t] %m%n
+                            </pattern>
+                        </PatternLayout>
+
+                        <OnStartupTriggeringPolicy/>
+                    </RollingFile>
+                </Route>
+            </Routes>
+        </Routing>
     </appenders>
 
     <loggers>
 
-        <root level="trace" >
-			<appender-ref ref="Console" />
-            <appender-ref ref="log" />
+        <root level="trace">
+
+            <appender-ref ref="Console"/>
+
+            <appender-ref ref="log"/>
+
+            <appender-ref ref="Routing"/>
         </root>
     </loggers>
 

@@ -37,7 +37,7 @@ public abstract class AbstractBuilder implements IBuilder{
 	private final static Logger logger = LogManager.getLogger(
 			AbstractBuilder.class.getName());
 	
-	private Task task;
+	public final Task task;
 	
 	public AbstractBuilder(Task task) throws BuildException {
 		this.task = task;
@@ -64,7 +64,8 @@ public abstract class AbstractBuilder implements IBuilder{
 	private void unzip(File outDir) throws BuildException {
 		InputStream fis = null;
 		try {
-			fis = new FileInputStream(getTask().getFullPathToZip() + "");
+			File archive = new File(getTask().getFullPathToZip());
+			fis = new FileInputStream(archive);
 		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage(), e);
 			throw new BuildException(IO_ERROR_AT_BUILD_INIT, e, this);

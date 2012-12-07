@@ -13,6 +13,10 @@
             <arg value="${args}" />
         </exec>
     </target>
+    
+    <target name="run-single">
+	<java classname="${classname}" dir="${work.dir}" fork="true"/>
+    </target>
 
     <target name="compile.all" >
 
