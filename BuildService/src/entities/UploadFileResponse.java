@@ -9,6 +9,7 @@ public class UploadFileResponse {
 		super();
 		this.result = result;
 		this.zipID = zipID;
+		this.description = "";
 	}
 	public boolean isResult() {
 		return result;

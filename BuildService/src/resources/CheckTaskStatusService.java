@@ -37,7 +37,6 @@ public class CheckTaskStatusService {
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-//	public Response checktaskstatus(@QueryParam("protocolVersion") String protocolVersion, @QueryParam("zipID") String zipId)
 	public Response checktaskstatus(String criJson)
 	{
 		Status status = null;

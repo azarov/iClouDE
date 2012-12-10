@@ -13,11 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import utils.PropertiesManager;
+import entities.IdProvider;
 import entities.Task;
 
 /**
- * This class saves input file. 
- *
+ * This class saves input projects and can get it back
  */
 public class Storage {
 	
@@ -49,12 +49,13 @@ public class Storage {
 		return instance;
 	}
 	
-	public Task saveFile(InputStream inputStream, String fileName) throws IOException, URISyntaxException
+	public Task saveFile(InputStream inputStream) throws IOException, URISyntaxException
 	{
-		String uploadedFileLocation = fileUploadPath + fileName;
+		String id = IdProvider.getNextId();
+		String uploadedFileLocation = fileUploadPath + id + ".zip";
 		saveToDisc(inputStream, uploadedFileLocation);
 		URI uri = new URI("file:///"+uploadedFileLocation);
-		Task task = new Task(uri);
+		Task task = new Task(id, uri);
 		tasks.put(task.getId(), task);
 		return task;
 	}
@@ -68,7 +69,6 @@ public class Storage {
 	private void saveToDisc(final InputStream fileInputStream,
 	        final String fileUploadPath) throws IOException
 	{
-
 		OutputStream out = null;
 		try {
 			out = new FileOutputStream(new File(fileUploadPath));

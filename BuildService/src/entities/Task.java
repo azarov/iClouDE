@@ -18,10 +18,10 @@ public class Task {
 	private Date queuingTime;
 	private Date complitaionStartTime;
 	
-	public Task(URI fullPathToZip) {
+	public Task(String id, URI fullPathToZip) {
 		super();
+		this.id = id;
 		this.fullPathToZip = fullPathToZip;
-		id = IdProvider.getNextId();
 		status = TaskStatus.NOT_BUILDED;
 	}
 

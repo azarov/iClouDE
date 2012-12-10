@@ -16,6 +16,11 @@ import com.sun.jersey.api.view.Viewable;
 @Path("/monitoring")
 public class MonitoringService {
 
+	/**
+	 * Returns html page with table of all tasks and additional information in a queue.
+	 * @author Andrew Azarov
+	 *
+	 */
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response GetAllTasks()

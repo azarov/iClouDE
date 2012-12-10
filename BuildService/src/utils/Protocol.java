@@ -1,5 +1,10 @@
 package utils;
 
+/**
+ * Current supported protocol
+ * @author Andrew Azarov
+ *
+ */
 public class Protocol {
 
 	private static final int Version = 1;

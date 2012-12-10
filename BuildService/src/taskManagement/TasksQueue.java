@@ -12,6 +12,12 @@ import entities.BuildStatus;
 import entities.Task;
 import entities.TaskStatus;
 
+/**
+ * Queue of incoming and processing tasks.
+ * This class is a thread-safe.
+ * @author Andrew Azarov
+ *
+ */
 public class TasksQueue {
 	
 	private static volatile TasksQueue instance = null;

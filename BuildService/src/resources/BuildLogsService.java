@@ -51,12 +51,12 @@ public class BuildLogsService {
 			return Response.noContent().build();
 		}
 		
-		if(task.getStatus() != TaskStatus.BUILDED)
+		/*if(task.getStatus() != TaskStatus.BUILDED)
 		{
 			map.put("buildLog", "Project wasn't builded yet.");
 			
 		}
-		else
+		else*/
 		{			
 			BuildResult br = TasksQueue.getInstance().getResult(task.getId());
 			if (br == null) 

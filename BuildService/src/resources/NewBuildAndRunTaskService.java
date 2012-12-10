@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import storage.Storage;
 import taskManagement.TasksQueue;
+import utils.Protocol;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -21,7 +22,9 @@ import com.google.gson.JsonSyntaxException;
 import entities.GsonProvider;
 import entities.NewTaskRequest;
 import entities.OperationType;
+import entities.Status;
 import entities.Task;
+import entities.TaskStatus;
 
 @Path("/newbuildandruntask")
 public class NewBuildAndRunTaskService {
@@ -36,32 +39,40 @@ public class NewBuildAndRunTaskService {
 	public Response newBuildAndRunTask(String newTaskRequestMessage)
 	{
 		Response.Status respStatus = Response.Status.OK;
+		Status status = new Status(false, "Unknown problem");
 		String output = "";
 		try {
 			NewTaskRequest newTaskRequest = gson.fromJson(newTaskRequestMessage, NewTaskRequest.class);
 			
-			Task task = Storage.getInstance().getTask(newTaskRequest.getZipID());
-						
-			if (task != null) {
-				TasksQueue taskManager = TasksQueue.getInstance();
-
-				setAdditionalParameters(task, newTaskRequest);
-				taskManager.add(task);
-				task.setQueuingTime(Calendar.getInstance().getTime());
-				mainLogger.info("Task {} was placed in the queue at {}.", task.getId(), task.getQueuingTime());
+			if (!Protocol.checkVersion(newTaskRequest.getProtocolVersion())) {
+				status = new Status(false, "Unsupported protocol version");
 			}
 			else {
-				respStatus = Response.Status.NO_CONTENT;
-				logger.warn("No tasks with id "+newTaskRequest.getZipID());
+				Task task = Storage.getInstance().getTask(newTaskRequest.getZipID());
+							
+				if (task != null) {
+					TasksQueue taskManager = TasksQueue.getInstance();
+	
+					setAdditionalParameters(task, newTaskRequest);
+					taskManager.add(task);
+					task.setQueuingTime(Calendar.getInstance().getTime());
+					mainLogger.info("Task {} was placed in the queue at {}.", task.getId(), task.getQueuingTime());
+					status =  new Status(true, "Success");
+				}
+				else {
+					respStatus = Response.Status.NO_CONTENT;
+					logger.warn("No tasks with id "+newTaskRequest.getZipID());
+					status =  new Status(false, "Bad id");
+				}
 			}
 			
 		} catch (JsonSyntaxException e) {
 			//can't parse incoming json
-			respStatus = Response.Status.INTERNAL_SERVER_ERROR;
 			logger.error("Can't parse json", e);
+			status = new Status(false, "Can't parse json");
 		}
 		
-		return Response.status(respStatus).entity(output).build();
+		return Response.status(respStatus).entity(gson.toJson(status)).build();
 	}
 
 	private void setAdditionalParameters(Task task, NewTaskRequest newTaskRequest) {

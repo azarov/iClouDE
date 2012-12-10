@@ -6,6 +6,12 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class encapsulated work with properties.
+ * This class is a singleton.
+ * @author Andrew Azarov
+ *
+ */
 public class PropertiesManager {
 
 	private static Object lockObject = new Object();

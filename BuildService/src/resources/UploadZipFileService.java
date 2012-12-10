@@ -47,12 +47,10 @@ public class UploadZipFileService {
 		}
 		else
 		{
-			final String fileName = fileInfo.getFileName();
-	
 			try
 			{
 				Storage storage = Storage.getInstance(); 
-				Task task = storage.saveFile(uploadedInputStream, fileName);
+				Task task = storage.saveFile(uploadedInputStream);
 				
 				UploadFileResponse response = new UploadFileResponse(task.getId(), true);
 				
