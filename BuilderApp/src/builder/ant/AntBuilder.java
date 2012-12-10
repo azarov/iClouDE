@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.Callable;
@@ -17,6 +19,7 @@ import java.util.concurrent.RunnableFuture;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -43,7 +46,6 @@ import entities.Task;
  * Builds java sources with Ant. Creates {@link org.apache.tools.ant.Project}
  * from build.xml and executes compilation target
  * 
- * build.xml is located in the root project directory
  */
 public class AntBuilder extends AbstractBuilder implements
 		Callable<BuildResult> {
@@ -62,9 +64,9 @@ public class AntBuilder extends AbstractBuilder implements
 	// private static final String RUN_LOG_MSG = "Run";
 	private static final String LOG_MSG_TYPE = "";
 
-//	private static Message buildMsg(Task task, String msg) {
-//		return new StructuredDataMessage(task.getId(), msg, LOG_MSG_TYPE);
-//	}
+	// private static Message buildMsg(Task task, String msg) {
+	// return new StructuredDataMessage(task.getId(), msg, LOG_MSG_TYPE);
+	// }
 
 	private void taskDebug(String msg) {
 		logger.debug(TASK_LOG, new StructuredDataMessage(task.getId(), msg,
@@ -121,7 +123,22 @@ public class AntBuilder extends AbstractBuilder implements
 						+ task.getEntryPointPath());
 		// taskDebug(msg)
 
-		p = antProject(new File("build.xml"));
+		 InputStream is = ClassLoader.getSystemResourceAsStream("build.xml");
+		 File buildxml = new File("toDelete.xml");
+		 try {
+			FileUtils.copyInputStreamToFile(is, buildxml);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	//	URL buildXml = Thread.currentThread().getContextClassLoader()
+				//.getResource("/build.xml");
+		//try {
+			p = antProject(buildxml);
+		/*} catch (URISyntaxException e) {
+			logger.error(e.getMessage(), e); // should be msg to task log
+			throw new BuildException("Problem with build.xml URI", e, this);
+		}*/
 
 		// Add build listener:
 		// try {
@@ -152,7 +169,7 @@ public class AntBuilder extends AbstractBuilder implements
 			props.store(out, "--- task properties ---");
 			out.close();
 		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e); // should be msg to task log
 			throw new BuildException(IO_ERROR_AT_BUILD_INIT, e, this);
 		}
 		// logStream.close();
@@ -175,11 +192,11 @@ public class AntBuilder extends AbstractBuilder implements
 					|| task.getOperation() == OperationType.BUILD_AND_RUN) {
 				p.executeTarget("compile.all");
 			}
-			if (task.getOperation() == OperationType.BUILD_AND_RUN){
+			if (task.getOperation() == OperationType.BUILD_AND_RUN) {
 				p.setProperty("work.dir", getBinFolder().getPath());
 				p.setProperty("classname", task.getEntryPointPath());
 				p.executeTarget("run-single");
-			}		
+			}
 		} catch (Exception e) {
 			p.fireBuildFinished(e);
 			logger.error(e.getMessage(), e);

@@ -25,6 +25,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 
@@ -41,8 +43,8 @@ public enum HttpMultiClient {
 	INSTANCE();
 
 	private HttpClient httpClient;
-
-	// HttpGet host = new HttpGet(uri)
+	private static Logger logger = LogManager.getLogger(HttpMultiClient.class
+			.getName());
 
 	private HttpMultiClient() {
 		PoolingClientConnectionManager cm = new PoolingClientConnectionManager();
@@ -55,17 +57,22 @@ public enum HttpMultiClient {
 	public HttpClient getHttpClient() {
 		return httpClient;
 	}
+
 	// or public int execGetRequest(URI uri, StringBuilder result) ?
-	public String execGetRequest(URI uri) {
+	public String execGetRequest(URI uri, Integer answerCode) throws  IOException {
 		HttpGet httpGet = new HttpGet(uri);
+		HttpResponse response = null;
+		response = httpClient.execute(httpGet, new BasicHttpContext());
+		
+		answerCode = response.getStatusLine().getStatusCode();
 		try {
-			HttpResponse response = httpClient.execute(httpGet,
-					new BasicHttpContext());
+			// HttpResponse response = httpClient.execute(httpGet,
+			// new BasicHttpContext());
 			HttpEntity entity = response.getEntity();
 			return entity == null ? null : EntityUtils.toString(entity);
 		} catch (ParseException | IOException e) {
 			httpGet.abort();
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
