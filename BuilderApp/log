@@ -1,3 +1,4 @@
-10:13:15.630 DEBUG execution.Execution 37 main - Start execution
-10:13:19.136 INFO  execution.TaskSender 50 run - {"taskId":"3","compiledSourcesPath":"file:/home/vitalii/workspace_backup/BuilderApp/3/bin/","logs":"file:/home/vitalii/workspace_backup/BuilderApp/3/log","buildStatus":"SUCCESSFUL","message":"BUILD SUCCESSFUL"}
-10:13:19.729 INFO  execution.TaskSender 50 run - {"taskId":"4","compiledSourcesPath":"file:/home/vitalii/workspace_backup/BuilderApp/4/bin/","logs":"file:/home/vitalii/workspace_backup/BuilderApp/4/log","buildStatus":"SUCCESSFUL","message":"BUILD SUCCESSFUL"}
+14:29:35.807 DEBUG execution.Execution 37 main - Start execution
+14:29:39.176 INFO  execution.TaskSender 50 run - {"taskId":"18","compiledSourcesPath":"file:/home/vitalii/workspace_backup/BuilderApp/18/bin/","logs":"file:/home/vitalii/workspace_backup/BuilderApp/18/log","buildStatus":"SUCCESSFUL","message":"BUILD SUCCESSFUL"}
+14:29:39.895 INFO  execution.TaskSender 50 run - {"taskId":"19","compiledSourcesPath":"file:/home/vitalii/workspace_backup/BuilderApp/19/bin/","logs":"file:/home/vitalii/workspace_backup/BuilderApp/19/log","buildStatus":"SUCCESSFUL","message":"BUILD SUCCESSFUL"}
+14:29:42.696 INFO  execution.TaskSender 50 run - {"taskId":"20","compiledSourcesPath":"file:/home/vitalii/workspace_backup/BuilderApp/20/bin/","logs":"file:/home/vitalii/workspace_backup/BuilderApp/20/log","buildStatus":"SUCCESSFUL","message":"BUILD SUCCESSFUL"}

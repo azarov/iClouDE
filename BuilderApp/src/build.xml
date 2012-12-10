@@ -1,0 +1,36 @@
+<project
+    name="MyProject"
+    basedir="." >
+
+    <!-- set global properties for this build -->
+
+    <target name="execscript" >
+
+        <exec executable="${exec}" >
+
+            <arg value="${script}" />
+
+            <arg value="${args}" />
+        </exec>
+    </target>
+    
+    <target name="run-single">
+	<java classname="${classname}" dir="${work.dir}" fork="true"/>
+    </target>
+
+    <target name="compile.all" >
+
+        <loadproperties srcFile="${proj.dir}/task.properties" />
+
+        <echo message="build.dir is ${build.dir}" />
+
+        <javac
+            destdir="${build.dir}"
+            srcdir="${src.dir}" >
+            <classpath>
+                <path path="@{classpath}" />
+            </classpath>
+        </javac>
+    </target>
+
+</project>

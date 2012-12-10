@@ -39,8 +39,7 @@ public class Execution {
 				executionProperties().executionThreadsNumber);
 		Timer timer = new Timer();
 		final TaskLauncher taskLauncher = new TaskLauncher(executor);
-		
-		//KeyValuePair g;
+
 		timer.schedule(new TimerTask() {
 			
 			@Override
