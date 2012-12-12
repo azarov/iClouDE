@@ -123,22 +123,22 @@ public class AntBuilder extends AbstractBuilder implements
 						+ task.getEntryPointPath());
 		// taskDebug(msg)
 
-		 InputStream is = ClassLoader.getSystemResourceAsStream("build.xml");
-		 File buildxml = new File("toDelete.xml");
-		 try {
+		InputStream is = ClassLoader.getSystemResourceAsStream("build.xml");
+		File buildxml = new File("tmp/build.xml");
+		try {
 			FileUtils.copyInputStreamToFile(is, buildxml);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			logger.error("Could not extract build.xml file", e1);
 		}
-	//	URL buildXml = Thread.currentThread().getContextClassLoader()
-				//.getResource("/build.xml");
-		//try {
-			p = antProject(buildxml);
-		/*} catch (URISyntaxException e) {
-			logger.error(e.getMessage(), e); // should be msg to task log
-			throw new BuildException("Problem with build.xml URI", e, this);
-		}*/
+		// URL buildXml = Thread.currentThread().getContextClassLoader()
+		// .getResource("/build.xml");
+		// try {
+		p = antProject(buildxml);
+		/*
+		 * } catch (URISyntaxException e) { logger.error(e.getMessage(), e); //
+		 * should be msg to task log throw new
+		 * BuildException("Problem with build.xml URI", e, this); }
+		 */
 
 		// Add build listener:
 		// try {
@@ -157,10 +157,11 @@ public class AntBuilder extends AbstractBuilder implements
 		// fileLogger.setMessageOutputLevel(Project.MSG_INFO);
 		p.addBuildListener(new AntBuildListener());
 		// TODO setMessageOutputLevel
-
+		p.setBaseDir(getTaskFolder().getAbsoluteFile().getParentFile());
 		p.setProperty("proj.dir", getTaskFolder().getAbsolutePath());
 
 		Properties props = new Properties();
+
 		props.setProperty("src.dir", getSrcFolder().getAbsolutePath());
 		props.setProperty("build.dir", getBinFolder().getAbsolutePath());
 		try {

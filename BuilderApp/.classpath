@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JUnit"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/osgi_vs_other"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/HttpClient"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Ant"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/log4j2-fixed"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/BuildService"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="libs/ant-launcher.jar"/>
 	<classpathentry kind="lib" path="libs/ant.jar"/>
 	<classpathentry kind="lib" path="libs/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="libs/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/gson-2.2.2.jar"/>
 	<classpathentry kind="lib" path="libs/httpclient-4.2.2.jar"/>
 	<classpathentry kind="lib" path="libs/httpcore-4.2.2.jar"/>
 	<classpathentry kind="lib" path="libs/log4j-api-2.0-beta3.jar"/>
@@ -19,11 +15,6 @@
 	<classpathentry kind="lib" path="libs/log4j2-core-classes.jar"/>
 	<classpathentry kind="lib" path="libs/mockejb.jar"/>
 	<classpathentry kind="lib" path="libs/org.apache.felix.main-4.0.3.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/jdk1.7.0_07/lib/tools.jar"/>
-	<classpathentry kind="lib" path="/BuildService/WebContent/WEB-INF/lib/gson-2.2.2.jar" sourcepath="C:/Users/Sprut/Downloads/google-gson-2.2.2/gson-2.2.2-javadoc.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Sprut/Downloads/google-gson-2.2.2/"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="libs/tools.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

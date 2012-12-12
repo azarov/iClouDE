@@ -1,6 +1,5 @@
 <project
-    name="MyProject"
-    basedir="." >
+    name="MyProject" >
 
     <!-- set global properties for this build -->
 

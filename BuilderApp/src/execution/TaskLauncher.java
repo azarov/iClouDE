@@ -20,7 +20,7 @@ import builder.ant.AntBuilder;
 import builder.common.BuildException;
 
 /**
- * The class fetches task from web service and passes it to executor Also start
+ * The class fetches task from web service and passes it to executor. Also starts
  * a sender process which will send the result to server
  * 
  * To sum up, the code in the run section starts entire task execution cycle

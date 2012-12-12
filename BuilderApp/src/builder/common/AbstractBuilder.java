@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.URI;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +20,8 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import utils.Utils;
 
 import entities.Task;
 
@@ -47,7 +50,7 @@ public abstract class AbstractBuilder implements IBuilder{
 			logger.error("could not create task folder", e);
 			throw new BuildException(IO_ERROR_AT_BUILD_INIT, e, this);
 		}
-		
+
 		unzip(getSrcFolder());
 	}
 	
@@ -102,7 +105,7 @@ public abstract class AbstractBuilder implements IBuilder{
 	private File makeTaskFolder() throws IOException {
 		File result = getTaskFolder();
 		if (result.exists()) {
-			rm_rf(result);
+			Utils.rm_rf(result);
 		}
 		result.mkdirs();
 		return result;
@@ -118,28 +121,5 @@ public abstract class AbstractBuilder implements IBuilder{
 		return task;
 	}
 	
-	private void rm_rf(File dir) throws IOException {
-		Path p = Paths.get(dir.toURI());
-		Files.walkFileTree(p, new SimpleFileVisitor<Path>() {
-
-			@Override
-			public FileVisitResult visitFile(Path file,
-					BasicFileAttributes attrs) throws IOException {
-				Files.delete(file);
-				return FileVisitResult.CONTINUE;
-			}
-
-			@Override
-			public FileVisitResult postVisitDirectory(Path dir, IOException exc)
-					throws IOException {
-				if (exc == null) {
-					Files.delete(dir);
-					return FileVisitResult.CONTINUE;
-				} else {
-					throw exc;
-				}
-			}
-
-		});
-	}
+	
 }
