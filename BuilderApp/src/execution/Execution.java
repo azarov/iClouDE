@@ -22,7 +22,10 @@ import ws.HttpMultiClient;
 import static execution.ExecutionProperties.executionProperties;
 
 /**
- * Class with main method
+ * Main class of the application
+ * 
+ * Has inside a timer with a cycle of getting new task 
+ * from server and starting it for execution
  * 
  * @author vitalii
  * 

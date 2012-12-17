@@ -12,6 +12,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 public class Utils {
 
 	/**
+	 * Removes directory with all it's subdirectories
 	 * @param args
 	 */
 	public static void rm_rf(File dir) throws IOException {

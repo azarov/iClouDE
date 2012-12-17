@@ -1,25 +1,19 @@
 package ws;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringReader;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.util.Properties;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.InputStreamEntity;
+
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
@@ -28,16 +22,13 @@ import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.gson.Gson;
-
-import entities.BuildResult;
-
-import static ws.BuildServiceProperties.buildServiceProperties;
 import static ws.HttpClientProperties.httpClientProperties;
 
-/*
- * Http client that can create connection pull to support
+/**
+ * Http client that creates a connection pull to support
  * concurrent http requests
+ * 
+ * Can execute GET and POST requests to a given URI
  */
 public enum HttpMultiClient {
 	INSTANCE();
@@ -58,7 +49,13 @@ public enum HttpMultiClient {
 		return httpClient;
 	}
 
-	// or public int execGetRequest(URI uri, StringBuilder result) ?
+	/**
+	 * HTTP GET request to server with given URI
+	 * 
+	 * @param answerCode HTTP answer code from server
+	 * @return response as String
+	 * @throws IOException
+	 */
 	public String execGetRequest(URI uri, Integer answerCode) throws  IOException {
 		HttpGet httpGet = new HttpGet(uri);
 		HttpResponse response = null;
@@ -66,8 +63,6 @@ public enum HttpMultiClient {
 		
 		answerCode = response.getStatusLine().getStatusCode();
 		try {
-			// HttpResponse response = httpClient.execute(httpGet,
-			// new BasicHttpContext());
 			HttpEntity entity = response.getEntity();
 			return entity == null ? null : EntityUtils.toString(entity);
 		} catch (ParseException | IOException e) {
@@ -77,6 +72,13 @@ public enum HttpMultiClient {
 		return null;
 	}
 
+	/**
+	 * HTTP POST request to server with given URI
+	 * 
+	 * @param content request content
+	 * @param contentType MIME-type of the request content
+	 * @return HTTP answer code from server
+	 */
 	public int execPostRequest(String content, String contentType, URI uri) {
 		HttpPost httpPost = new HttpPost(uri);
 		StringEntity entity = null;

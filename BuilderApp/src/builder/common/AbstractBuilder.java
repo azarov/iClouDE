@@ -26,8 +26,11 @@ import utils.Utils;
 import entities.Task;
 
 /**
- * Class constructs common directories structure for a builder
- * Sets up src and bin directories and unpacks zip with sources into src.
+ * The abstract class for the builder
+ * 
+ * The class initializes build environment for the task: 
+ * constructs common directories structure 
+ * and unpacks zip with sources into sources folder.
  * 
  * @author vitalii
  *
@@ -42,6 +45,14 @@ public abstract class AbstractBuilder implements IBuilder{
 	
 	public final Task task;
 	
+	/**
+	 * Initializes build environment for the task:
+	 * 	- creates output folder with the same name as this task's id
+	 *  - unpacks zip with sources into <task id>/src folder
+	 *  - sets <task id>/bin as output folder for compiled files
+	 *  
+	 *  @throws BuildException 
+	 */  
 	public AbstractBuilder(Task task) throws BuildException {
 		this.task = task;
 		try {
