@@ -45,7 +45,8 @@ public class NewBuildAndRunTaskService {
 			NewTaskRequest newTaskRequest = gson.fromJson(newTaskRequestMessage, NewTaskRequest.class);
 			
 			if (!Protocol.checkVersion(newTaskRequest.getProtocolVersion())) {
-				status = new Status(false, "Unsupported protocol version");
+				status = new Status(false, "Unsupported protocol version. " + newTaskRequest.getProtocolVersion());
+				logger.warn("Unsupported protocol version. {}", newTaskRequest.getProtocolVersion());
 			}
 			else {
 				Task task = Storage.getInstance().getTask(newTaskRequest.getZipID());
@@ -71,6 +72,9 @@ public class NewBuildAndRunTaskService {
 			logger.error("Can't parse json", e);
 			status = new Status(false, "Can't parse json");
 		}
+		catch (Exception e) {
+			logger.error("newBuildAndRunTask error", e);
+		}
 		
 		return Response.status(respStatus).entity(gson.toJson(status)).build();
 	}
@@ -79,7 +83,7 @@ public class NewBuildAndRunTaskService {
 		task.setCompilator(newTaskRequest.getCompilator());
 		task.setCompileParameters(newTaskRequest.getCompileParameters());
 		task.setLanguageType(newTaskRequest.getLanguageType());
-		task.setOperation(OperationType.valueOf(newTaskRequest.getOperation()));
+		task.setOperation(OperationType.getOperationType(newTaskRequest.getOperation()));
 		task.setEntryPointPath(newTaskRequest.getEntryPointPath());
 	}
 }
